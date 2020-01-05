@@ -1,0 +1,40 @@
+doctype html
+html
+  head
+    title #{title}
+    link(rel='stylesheet', href='/css/style.css')
+    meta(name="viewport" content="width=device-width, initial-scale=1")
+  body
+    main
+      block header
+        header.header
+          h1 #{title}
+      block content
+      div.container
+          h2#label Tweet ID:
+          div.tweetBox
+              input#inputBox(type='text' name='Tweet ID #')
+              button#next.button-next Next Tweet
+              p#tweetText
+              button#rel.relevant Relevant
+              button#irr.irrelevant Irrelevant
+          script.
+            var data = !{JSON.stringify(data)};
+            var maxLength = data.length;
+            var curIndex = 0
+            function nextItem() {
+              if (curIndex < maxLength){
+                document.getElementById("label").innerHTML= "Current Tweet ID: " + curIndex
+                document.getElementById("tweetText").innerHTML = data[curIndex].text
+                curIndex++
+              }
+             }
+             function relClick(){
+               console.log("Clicked Relevant")
+             }
+             function irrClick(){
+               console.log("Clicked Irrelevant")
+             }
+             rel.addEventListener('click',relClick);
+             irr.addEventListener('click',irrClick);
+             next.addEventListener('click', nextItem);

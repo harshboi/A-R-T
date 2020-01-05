@@ -1,0 +1,29 @@
+{
+  "tweets": [
+    {
+      "id":"0",
+      "text": "this is tweet index 0",
+      "relevancy": "unknown"
+    },
+    {
+      "id":"1",
+      "text": "this is tweet index 1",
+      "relevancy": "unknown"
+    },
+    {
+      "id":"2",
+      "text": "this is tweet index 2",
+      "relevancy": "unknown"
+    },
+    {
+      "id":"3",
+      "text": "this is tweet index 3",
+      "relevancy": "unknown"
+    },
+    {
+      "id":"4",
+      "text": "this is tweet index 4",
+      "relevancy": "unknown"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "name": "twint_scraper",
+  "version": "1.0.0",
+  "description": "used for labeling tweets as 1 or 0",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "npx nodemon server.js"
+  },
+  "author": "Nikhil Anand",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "nodemon": "^2.0.2",
+    "pug": "^2.0.4"
+  }
+}
