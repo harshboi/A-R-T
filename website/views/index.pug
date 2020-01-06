@@ -25,15 +25,30 @@ html
             function nextItem() {
               if (curIndex < maxLength){
                 document.getElementById("label").innerHTML= "Current Tweet ID: " + curIndex
-                document.getElementById("tweetText").innerHTML = data[curIndex].text
+                document.getElementById("tweetText").innerHTML = data[curIndex].tweet
                 curIndex++
               }
              }
              function relClick(){
+               var xhr = new XMLHttpRequest();
+               var newData = {'tweet':data[curIndex-1].tweet,'relevant':1};
+               var jsonData = JSON.stringify(newData);
+               xhr.open("POST","/",true);
+               xhr.setRequestHeader('Content-type','application/json');
+               xhr.send(jsonData);
                console.log("Clicked Relevant")
+               nextItem();
              }
              function irrClick(){
+               var xhr = new XMLHttpRequest();
+               var newData = {'tweet':data[curIndex-1].tweet,'relevant':0};
+               var jsonData = JSON.stringify(newData);
+               xhr.open("POST","/",true);
+               xhr.setRequestHeader('Content-type','application/json');
+               xhr.send(jsonData);
+               console.log(jsonData);
                console.log("Clicked Irrelevant")
+               nextItem();
              }
              rel.addEventListener('click',relClick);
              irr.addEventListener('click',irrClick);
