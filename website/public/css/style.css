@@ -138,10 +138,12 @@ body {
   position: absolute;
   left: 100px;
   top:150px;
+  color:#00e600;
 }
 #label2{
   font-size: 25px;
   position: absolute;
   left: 100px;
   top: 200px;
+  color:#ff0000;
 }
