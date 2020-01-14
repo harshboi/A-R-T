@@ -89,6 +89,7 @@ app.post('/',(req,res) => {
     }
     console.log("Inserted new Tweet Successfully!");
   });
+  res.end()
 });
 
 const server = app.listen(9000,() => {
