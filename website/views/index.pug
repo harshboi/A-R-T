@@ -14,41 +14,62 @@ html
           h2#label Tweet ID:
           div.tweetBox
               input#inputBox(type='text' name='Tweet ID #')
-              button#next.button-next Next Tweet
+              button#next.button-next Pull Tweet
               p#tweetText
               button#rel.relevant Relevant
               button#irr.irrelevant Irrelevant
           script.
             var data = !{JSON.stringify(data)};
-            var maxLength = data.length;
-            var curIndex = 0
             function nextItem() {
-              if (curIndex < maxLength){
-                document.getElementById("label").innerHTML= "Current Tweet ID: " + curIndex
-                document.getElementById("tweetText").innerHTML = data[curIndex].tweet
-                curIndex++
+              data = !{JSON.stringify(data)};
+              //- console.log("The new data is:");
+              //- console.log(data[0]);
+              data = data[0];
+              if (data){
+                //- document.getElementById("label").innerHTML= "Current Tweet ID: " + curIndex
+                document.getElementById("tweetText").innerHTML = data.tweet
               }
+             }
+             function newItem(passed){
+               console.log(passed);
+               document.getElementById("tweetText").innerHTML = passed.tweet
              }
              function relClick(){
                var xhr = new XMLHttpRequest();
-               var newData = {'tweet':data[curIndex-1].tweet,'relevant':1};
+               var newData = data;
+               newData['relevant'] = 1;
                var jsonData = JSON.stringify(newData);
                xhr.open("POST","/",true);
                xhr.setRequestHeader('Content-type','application/json');
                xhr.send(jsonData);
-               console.log("Clicked Relevant")
-               nextItem();
+               console.log("Clicked Relevant");
+               xhr = new XMLHttpRequest();
+               xhr.open("GET","/",true); 
+               xhr.send();
+               xhr.onload = function(){
+                 var check = JSON.parse(xhr.response);
+                 data = (check['ndata'][0]);
+                 newItem(data);
+               };
+               
              }
              function irrClick(){
                var xhr = new XMLHttpRequest();
-               var newData = {'tweet':data[curIndex-1].tweet,'relevant':0};
+               var newData = data;
+               newData['relevant'] = 0;
                var jsonData = JSON.stringify(newData);
                xhr.open("POST","/",true);
                xhr.setRequestHeader('Content-type','application/json');
                xhr.send(jsonData);
-               console.log(jsonData);
-               console.log("Clicked Irrelevant")
-               nextItem();
+               console.log("Clicked irrelevant");
+               xhr = new XMLHttpRequest();
+               xhr.open("GET","/",true); 
+               xhr.send();
+               xhr.onload = function(){
+                 var check = JSON.parse(xhr.response);
+                 data = (check['ndata'][0]);
+                 newItem(data);
+               };
              }
              rel.addEventListener('click',relClick);
              irr.addEventListener('click',irrClick);
