@@ -50,6 +50,7 @@ app.get('/', (req, res) => {
 });
 app.post('/',(req,res) => {
   var newRow = {
+    relevant: req.body.relevant,
     created_at: req.body.created_at,
     date: req.body.date,
     time: req.body.time,
@@ -80,8 +81,9 @@ app.post('/',(req,res) => {
     translate:req.body.translate,
     trans_src:req.body.trans_src,
     trans_dest: req.body.trans_dest,
-    relevant: req.body.relevant,
-    photos: req.body.photos
+    photos: req.body.photos,
+    conversation_id:req.body.conversation_id,
+    id:req.body.id
   };
   connection.query('INSERT INTO data.classified_tweets SET ?',newRow,(err,res) => {
     if(err){
@@ -117,7 +119,9 @@ app.post('/',(req,res) => {
         translate:req.body.translate,
         trans_src:req.body.trans_src,
         trans_dest: req.body.trans_dest,
-        photos: req.body.photos
+        photos: req.body.photos,
+        conversation_id:req.body.conversation_id,
+        id:req.body.id
       };
       connection.query('INSERT INTO data.train_data SET ?',reRow, (err,rest) => {
         if(!err){
