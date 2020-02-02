@@ -1,4 +1,3 @@
-print("here")
 from bert_serving.client import BertClient
 bc = BertClient(check_length = False)
 import numpy as np
