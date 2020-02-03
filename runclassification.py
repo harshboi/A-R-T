@@ -11,6 +11,7 @@ import torch.optim as optim
 import pdb
 import matplotlib.pyplot as plt
 
+#pytorch definition for 1 layer neural network
 class Net(nn.Module):
 
     def __init__(self):
@@ -22,7 +23,7 @@ class Net(nn.Module):
         return x
 
 
-
+#prints out accuracy and auc
 def print_metrics(y_true,y_pred):
     accuracy_score = metrics.accuracy_score(y_true,y_pred)
     print("Accuracy score: {}".format(accuracy_score))
@@ -31,26 +32,21 @@ def print_metrics(y_true,y_pred):
     print("AUC: {}".format(auc_score))
     return accuracy_score,auc_score
 
+#fits a logistic regression model and predicts on test set
 def logistic_regression(x_train,x_test,y_train,y_test):
     logisticRegr = LogisticRegression()
     logisticRegr.fit(x_train,y_train)
     predictions = logisticRegr.predict(x_test)
     print_metrics(y_test,predictions)
 
-
+#fits a svm and predicts on test set
 def support_vector(x_train,x_test,y_train,y_test):
     model = svm.SVC()
     model.fit(x_train,y_train)
     predictions = model.predict(x_test)
     print_metrics(y_test,predictions)
 
-def torch_label_creator(label):
-    if label.item() == 1:
-        return torch.tensor([1,0])
-    else:
-        return torch.tensor([0,1])
-
-
+#trains neural network and displays metrics for each epoch
 def dense_layer(x_train,x_test,y_train,y_test):
     
     epoch_num = 50
@@ -70,7 +66,7 @@ def dense_layer(x_train,x_test,y_train,y_test):
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.SGD(model.parameters(), lr = 0.001, momentum=0.9)
 
-
+    #training iterations for network
     for epoch in range(epoch_num):
         model.train()
         for i,data in enumerate(x_train):
@@ -106,7 +102,7 @@ def dense_layer(x_train,x_test,y_train,y_test):
         
 
 
-
+#parses user input to determine which classifier to apply
 def main():
     encodings = np.load('tweet_encodings.npy')
     labels = np.load('maybeincludedlabels.npy')
