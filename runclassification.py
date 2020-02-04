@@ -111,7 +111,7 @@ def main():
     encodings = np.load('tweet_encodings.npy')
     labels = np.load('maybeincludedlabels.npy')
     x_train,x_test,y_train,y_test = train_test_split(encodings,labels, test_size=0.25, random_state=0)
-    if len(sys.argv) != 2:
+    if len(sys.argv) != 2: 
         print("specify which classifier to use. Options are 'logistic', 'svm', or 'neural'")
     else:
         if sys.argv[1] == 'logistic':

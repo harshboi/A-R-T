@@ -130,6 +130,7 @@ app.post('/',(req,res) => {
       connection.query('INSERT INTO data.train_data SET ?',reRow, (err,rest) => {
         if(!err){
           console.log("Put the row back in train_data");
+          alert("Put the row back in train_data");
         }
       });
       return;
