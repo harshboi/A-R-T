@@ -9,8 +9,10 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 import pdb
+import scikitplot as skplt
 import matplotlib.pyplot as plt
 
+#pytorch definition for 1 layer neural network
 class Net(nn.Module):
 
     def __init__(self):
@@ -22,35 +24,52 @@ class Net(nn.Module):
         return x
 
 
-
-def print_metrics(y_true,y_pred):
+#prints out accuracy and auc
+def print_metrics(y_true,y_pred,y_probas,show_plot=True):
     accuracy_score = metrics.accuracy_score(y_true,y_pred)
     print("Accuracy score: {}".format(accuracy_score))
-    fpr, tpr, thresholds = metrics.roc_curve(y_true,y_pred,pos_label = 1)
+    fpr, tpr, thresholds = metrics.roc_curve(y_true,y_probas,pos_label = 1)
     auc_score = metrics.auc(fpr,tpr)
     print("AUC: {}".format(auc_score))
+    if show_plot:
+        plt.figure()
+        plt.plot(fpr, tpr)
+        plt.xlim([0.0, 1.0])
+        plt.ylim([0.0, 1.05])
+        plt.xlabel('False Positive Rate')
+        plt.ylabel('True Positive Rate')
+        plt.title('Receiver operating characteristic')
+        plt.show()
     return accuracy_score,auc_score
 
+#fits a logistic regression model and predicts on test set
 def logistic_regression(x_train,x_test,y_train,y_test):
-    logisticRegr = LogisticRegression()
+    logisticRegr = LogisticRegression(solver='lbfgs',max_iter=1000)
     logisticRegr.fit(x_train,y_train)
-    predictions = logisticRegr.predict(x_test)
-    print_metrics(y_test,predictions)
+    train_predictions = logisticRegr.predict(x_train)
+    train_probas = logisticRegr.predict_proba(x_train)
+    test_predictions = logisticRegr.predict(x_test)
+    test_probas = logisticRegr.predict_proba(x_test)
+    print("Train Data Metrics:")
+    print_metrics(y_train,train_predictions,train_probas[:,1])
+    print("\nTest Data Metrics:")
+    print_metrics(y_test,test_predictions,test_probas[:,1])
 
-
+#fits a svm and predicts on test set
 def support_vector(x_train,x_test,y_train,y_test):
-    model = svm.SVC()
+    print("training model, takes a little time.")
+    model = svm.SVC(probability=True,gamma='auto')
     model.fit(x_train,y_train)
-    predictions = model.predict(x_test)
-    print_metrics(y_test,predictions)
+    train_predictions = model.predict(x_train)
+    train_probas = model.predict_proba(x_train)
+    test_predictions = model.predict(x_test)
+    test_probas = model.predict_proba(x_test)
+    print("Train Data Metrics:")
+    print_metrics(y_train,train_predictions,train_probas[:,1])
+    print("\nTest Data Metrics:")
+    print_metrics(y_test,test_predictions,test_probas[:,1])
 
-def torch_label_creator(label):
-    if label.item() == 1:
-        return torch.tensor([1,0])
-    else:
-        return torch.tensor([0,1])
-
-
+#trains neural network and displays metrics for each epoch
 def dense_layer(x_train,x_test,y_train,y_test):
     
     epoch_num = 50
@@ -70,7 +89,7 @@ def dense_layer(x_train,x_test,y_train,y_test):
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.SGD(model.parameters(), lr = 0.001, momentum=0.9)
 
-
+    #training iterations for network
     for epoch in range(epoch_num):
         model.train()
         for i,data in enumerate(x_train):
@@ -82,16 +101,31 @@ def dense_layer(x_train,x_test,y_train,y_test):
             optimizer.step()
         model.eval()
 
-        #print and store metrics for each epoch
+        #print and store metrics for each epoch, change 'False' to 'True' in print_metrics to generate ROC curves each epoch
         train_predictions = model(x_train)
         print("Epoch {}:\n".format(epoch+1))
         print("Training Data Metrics:")
-        train_accuracies[epoch], train_auc[epoch] = print_metrics(y_train,train_predictions.max(1).indices.numpy())
+        train_accuracies[epoch], train_auc[epoch] = print_metrics(y_train,train_predictions.max(1).indices.numpy(),train_predictions[:,1].detach().numpy(),False)
         test_predictions = model(x_test)
         print("\nTest Data Metrics:")
-        test_accuracies[epoch], test_auc[epoch] = print_metrics(y_test,test_predictions.max(1).indices.numpy())
+        test_accuracies[epoch], test_auc[epoch] = print_metrics(y_test,test_predictions.max(1).indices.numpy(),test_predictions[:,1].detach().numpy(),False)
         print("\n")
 
+    
+    #plot train accuracies and auc over epochs    
+    plt.plot(train_accuracies)
+    plt.ylabel('Accuracy')
+    plt.xlabel('Epoch')
+    plt.title('Train Accuracy vs Epoch')
+    plt.show()
+    plt.plot(train_auc)
+    plt.ylabel('AUC')
+    plt.xlabel('Epoch')
+    plt.title('Train AUC vs Epoch')
+    plt.show()    
+    
+    
+    
     #plot test accuracies and auc over epochs    
     plt.plot(test_accuracies)
     plt.ylabel('Accuracy')
@@ -106,7 +140,7 @@ def dense_layer(x_train,x_test,y_train,y_test):
         
 
 
-
+#parses user input to determine which classifier to apply
 def main():
     encodings = np.load('tweet_encodings.npy')
     labels = np.load('maybeincludedlabels.npy')
