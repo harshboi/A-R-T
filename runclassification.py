@@ -57,6 +57,7 @@ def logistic_regression(x_train,x_test,y_train,y_test):
 
 #fits a svm and predicts on test set
 def support_vector(x_train,x_test,y_train,y_test):
+    print("training model, takes a little time.")
     model = svm.SVC(probability=True,gamma='auto')
     model.fit(x_train,y_train)
     train_predictions = model.predict(x_train)
@@ -100,7 +101,7 @@ def dense_layer(x_train,x_test,y_train,y_test):
             optimizer.step()
         model.eval()
 
-        #print and store metrics for each epoch
+        #print and store metrics for each epoch, change 'False' to 'True' in print_metrics to generate ROC curves each epoch
         train_predictions = model(x_train)
         print("Epoch {}:\n".format(epoch+1))
         print("Training Data Metrics:")
