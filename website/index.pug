@@ -1,0 +1,135 @@
+
+doctype html
+html
+head
+  title #{title}
+  link(rel='stylesheet', href='/css/style.css')
+  meta(name="viewport" content="width=device-width, initial-scale=1")
+body
+  main
+    block header
+      header.header
+        h1 #{title}
+    block content
+    div.container
+        button#exit.exitbutton Exit:
+        h2#label Relevant:
+        h2#label2 Irrelevant:
+        h2#label3 Maybe:
+        div.tweetBox
+            button#next.button-next Pull Tweet
+            p#tweetText
+            button#rel.relevant Relevant
+            button#irr.irrelevant Irrelevant
+            button#mab.maybe Maybe Relevant
+        script.
+          var data = !{JSON.stringify(data)};
+          var first = 0;
+          function nextItem() {
+            if(first == 0){
+              first =1;
+              data = !{JSON.stringify(data)};
+              relc = !{JSON.stringify(relevant_count)};
+              irrelc = !{JSON.stringify(irrelevant_count)};
+              mabc = !{JSON.stringify(maybe_count)};
+              //- console.log("The new data is:");
+              //- console.log(data[0]);
+              data = data[0];
+              if (data){
+                //- document.getElementById("label").innerHTML= "Current Tweet ID: " + curIndex
+                document.getElementById("tweetText").innerHTML = data.tweet
+                document.getElementById("label").innerHTML = "Relevant: "+ relc
+                document.getElementById("label2").innerHTML = "Irrelevant: " + irrelc
+                document.getElementById("label3").innerHTML = "Maybe: "+mabc
+              }
+            }
+              
+           }
+           function newItem(passed,relc,irrelc){
+             document.getElementById("tweetText").innerHTML = passed.tweet
+             document.getElementById("label").innerHTML = "Relevant: "+ relc
+             document.getElementById("label2").innerHTML = "Irrelevant: " + irrelc
+           }
+           function relClick(){
+             var xhr = new XMLHttpRequest();
+             var newData = data;
+             newData['relevant'] = 1;
+             var jsonData = JSON.stringify(newData);
+             xhr.open("POST","/",true);
+             xhr.setRequestHeader('Content-type','application/json');
+             xhr.send(jsonData);
+             console.log("Clicked Relevant");
+             xhr = new XMLHttpRequest();
+             xhr.open("GET","/newtweet",true); 
+             xhr.send();
+             xhr.onload = function(){
+               var check = JSON.parse(xhr.response);
+               data = (check['ndata'][0]);
+               newItem(data,check['rc'],check['ic'],check['mc']);
+             };
+             
+           }
+           function irrClick(){
+             var xhr = new XMLHttpRequest();
+             var newData = data;
+             newData['relevant'] = 0;
+             var jsonData = JSON.stringify(newData);
+             xhr.open("POST","/",true);
+             xhr.setRequestHeader('Content-type','application/json');
+             xhr.send(jsonData);
+             console.log("Clicked irrelevant");
+             xhr = new XMLHttpRequest();
+             xhr.open("GET","/newtweet",true); 
+             xhr.send();
+             xhr.onload = function(){
+               var check = JSON.parse(xhr.response);
+               data = (check['ndata'][0]);
+               newItem(data,check['rc'],check['ic'],check['mc']);
+             };
+           }
+           function mabClick(){
+             var xhr = new XMLHttpRequest();
+             var newData = data;
+             newData['relevant'] = 2;
+             var jsonData = JSON.stringify(newData);
+             xhr.open("POST","/",true);
+             xhr.setRequestHeader('Content-type','application/json');
+             xhr.send(jsonData);
+             console.log("Clicked maybe");
+             xhr = new XMLHttpRequest();
+             xhr.open("GET","/newtweet",true); 
+             xhr.send();
+             xhr.onload = function(){
+               var check = JSON.parse(xhr.response);
+               data = (check['ndata'][0]);
+               newItem(data,check['rc'],check['ic'],check['mc']);
+             };
+           }
+           function exitPage(){
+             console.log(data)
+             if(data){
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST","/exitpage", true);
+                xhr.setRequestHeader('Content-type','application/json');
+                var jsonData = JSON.stringify(data);
+                xhr.send(jsonData);
+                xhr.onreadystatechange = function () {
+                  console.log(xhr.status)
+                  if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+                    console.log("successfully sent tweet to server");
+                  }
+                };
+             }
+             else{
+             console.log("no data")
+             }
+
+           }
+           
+
+           rel.addEventListener('click',relClick);
+           irr.addEventListener('click',irrClick);
+           mab.addEventListener('click',mabClick);
+           next.addEventListener('click', nextItem);
+           exit.addEventListener('click', exitPage);
+
