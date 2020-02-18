@@ -123,6 +123,17 @@ body {
   height: 50px;
   width: 100px;
   bottom:-70px;
+  left:350px;
+}
+.maybe {
+  position:absolute;
+  color:#FFFFFF;
+  background-color: #ffd300;
+  border-radius: 5px;
+  font-size: 15px;
+  height: 50px;
+  width: 100px;
+  bottom:-70px;
   left:150px;
 }
 #inputBox{
@@ -146,4 +157,23 @@ body {
   left: 100px;
   top: 200px;
   color:#ff0000;
+}
+#label3{
+  font-size: 25px;
+  position: absolute;
+  left: 100px;
+  top: 250px;
+  color:#ffd300;
+}
+
+#exit{
+  position: absolute;
+  left: 100px;
+  top: 300px;
+  background-color: #FFFFFF;
+  border-radius: 5px;
+  border-color: #ff0000;
+  font-size: 15px;
+  height: 50px;
+  width: 100px;
 }
