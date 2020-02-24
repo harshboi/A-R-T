@@ -27,7 +27,7 @@ connection.connect((err) => {
 
 
 app.get('/', (req, res) => {
-  connection.query("START TRANSACTION; SELECT * FROM data.train_data ORDER BY train_id ASC LIMIT 1; DELETE FROM data.train_data ORDER BY train_id ASC LIMIT 1; SELECT COUNT(*) FROM data.classified_tweets WHERE relevant = 001; SELECT COUNT(*) FROM data.classified_tweets WHERE relevant = 000; SELECT COUNT(*) FROM data.classified_tweets WHERE relevant = 002; COMMIT;",(err,rows) => {
+  connection.query("START TRANSACTION; SELECT * FROM data.train_data ORDER BY train_id ASC LIMIT 1; DELETE FROM data.train_data ORDER BY train_id ASC LIMIT 1; SELECT COUNT(*) FROM data.test_tweets_classified WHERE relevant = 001; SELECT COUNT(*) FROM data.test_tweets_classified WHERE relevant = 000; SELECT COUNT(*) FROM data.test_tweets_classified WHERE relevant = 002; COMMIT;",(err,rows) => {
     if(err){
       console.log('Error selecting tweets from Database...');
       return;
@@ -44,7 +44,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/newtweet', (req, res) => {
-  connection.query("START TRANSACTION; SELECT * FROM data.train_data ORDER BY train_id ASC LIMIT 1; DELETE FROM data.train_data ORDER BY train_id ASC LIMIT 1; SELECT COUNT(*) FROM data.classified_tweets WHERE relevant = 001; SELECT COUNT(*) FROM data.classified_tweets WHERE relevant = 000; SELECT COUNT(*) FROM data.classified_tweets WHERE relevant = 002; COMMIT;",(err,rows) => {
+  connection.query("START TRANSACTION; SELECT * FROM data.train_data ORDER BY train_id ASC LIMIT 1; DELETE FROM data.train_data ORDER BY train_id ASC LIMIT 1; SELECT COUNT(*) FROM data.test_tweets_classified WHERE relevant = 001; SELECT COUNT(*) FROM data.test_tweets_classified WHERE relevant = 000; SELECT COUNT(*) FROM data.test_tweets_classified WHERE relevant = 002; COMMIT;",(err,rows) => {
     if(err){
       console.log('Error selecting tweets from Database...');
       return;
@@ -89,7 +89,7 @@ app.post('/',(req,res) => {
     conversation_id:req.body.conversation_id,
     id:req.body.id
   };
-  connection.query('INSERT INTO data.classified_tweets SET ?',newRow,(err,res) => {
+  connection.query('INSERT INTO data.test_tweets_classified SET ?',newRow,(err,res) => {
     if(err){
       console.log("Failed to insert new tweet into database...");
       var reRow = {
