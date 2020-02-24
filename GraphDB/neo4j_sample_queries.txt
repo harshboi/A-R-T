@@ -1,0 +1,18 @@
+//Loading Data
+CALL apoc.load.json("file:///capstone_test_data.json") Yield value Return value LIMIT 1000
+
+//Creating Nodes and Labels
+CALL apoc.load.json("file:///capstone_test_data.json") 
+Yield value
+With value LIMIT 1000
+Merge (a:Tweet{id:value.id,date:value.date,train_id:value.train_id})
+Merge (d:Date{date:value.date})
+Merge (a)-[:SAME_DATE]->(d)
+
+
+
+//Matching and creating relations on preloaded data
+
+MATCH (a:Tweet),(b:Date)
+WHERE EXISTS (a.date) AND EXISTS (b.date) AND a.date = b.date
+CREATE (a)-[:SAME_DATE]->(b);
