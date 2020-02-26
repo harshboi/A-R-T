@@ -8,6 +8,8 @@ import re
 import json
 import os.path
 import sys
+import pdb
+
 
 #validate command line arguments
 if len(sys.argv) < 4 or len(sys.argv) > 5 or (len(sys.argv) == 5 and sys.argv[4] != 'ignore'):
@@ -35,19 +37,26 @@ else:
     irrnum = 0
     text = []
     labels = []
+
+    seen_urls = set()
     for x in data:
+        if re.sub(r"http\S+", "", x['tweet']) in seen_urls:
+            continue
+        else:
+            seen_urls.add(re.sub(r"http\S+", "", x['tweet']))
+
         if x['relevant'] == 0:
             irrnum +=1
-            text.append(x['tweet'])
+            text.append(re.sub(r"http\S+", "", x['tweet']))
             labels.append(x['relevant'])
         elif x['relevant'] == 1:
             relnum +=1
-            text.append(x['tweet'])
+            text.append(re.sub(r"http\S+", "", x['tweet']))
             labels.append(x['relevant'])
         else:
             if use_maybes:
                 relnum += 1
-                text.append(x['tweet'])
+                text.append(re.sub(r"http\S+", "", x['tweet']))
                 labels.append(1)
 
     #filter out tweets that are empty, and remove corresponding entries from label list
