@@ -45,10 +45,11 @@ body
             }
               
            }
-           function newItem(passed,relc,irrelc){
+           function newItem(passed,relc,irrelc,mabc){
              document.getElementById("tweetText").innerHTML = passed.tweet
              document.getElementById("label").innerHTML = "Relevant: "+ relc
              document.getElementById("label2").innerHTML = "Irrelevant: " + irrelc
+             document.getElementById("label3").innerHTML = "Maybe: "+mabc
            }
            function relClick(){
              var xhr = new XMLHttpRequest();
