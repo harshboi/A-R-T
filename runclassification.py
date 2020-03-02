@@ -1,4 +1,5 @@
 from sklearn.model_selection import train_test_split
+from sklearn.utils import shuffle
 from sklearn.linear_model import LogisticRegression
 from sklearn import svm
 from sklearn import metrics
@@ -105,10 +106,11 @@ def dense_layer(x_train,x_test,y_train,y_test):
         train_predictions = model(x_train)
         print("Epoch {}:\n".format(epoch+1))
         print("Training Data Metrics:")
-        train_accuracies[epoch], train_auc[epoch] = print_metrics(y_train,train_predictions.max(1).indices.numpy(),train_predictions[:,1].detach().numpy(),False)
+        #pdb.set_trace()
+        train_accuracies[epoch], train_auc[epoch] = print_metrics(y_train.numpy(),train_predictions.max(1).indices.numpy(),train_predictions[:,1].detach().numpy(),False)
         test_predictions = model(x_test)
         print("\nTest Data Metrics:")
-        test_accuracies[epoch], test_auc[epoch] = print_metrics(y_test,test_predictions.max(1).indices.numpy(),test_predictions[:,1].detach().numpy(),False)
+        test_accuracies[epoch], test_auc[epoch] = print_metrics(y_test.numpy(),test_predictions.max(1).indices.numpy(),test_predictions[:,1].detach().numpy(),False)
         print("\n")
 
     
@@ -142,12 +144,20 @@ def dense_layer(x_train,x_test,y_train,y_test):
 
 #parses user input to determine which classifier to apply
 def main():
-    encodings = np.load('tweet_encodings.npy')
-    labels = np.load('maybeincludedlabels.npy')
-    x_train,x_test,y_train,y_test = train_test_split(encodings,labels, test_size=0.25, random_state=0)
-    if len(sys.argv) != 2: 
-        print("specify which classifier to use. Options are 'logistic', 'svm', or 'neural'")
+
+    if len(sys.argv) != 4 and len(sys.argv) != 6: 
+        print("usage: runclassification.py <classifier> <training_tweets> <training_labels> [test_tweets] [test_labels]")
+        print("       Options for <classifier> are 'logistic', 'svm', or 'neural'")
     else:
+        x_train,x_test,y_train,y_test = None,None,None,None
+        if len(sys.argv) == 4:
+            train_encodings = np.load(sys.argv[2])
+            train_labels = np.load(sys.argv[3])
+            x_train,x_test,y_train,y_test = train_test_split(train_encodings,train_labels, test_size=0.25, random_state=0)
+        else:
+            x_train,y_train = shuffle(np.load(sys.argv[2]),np.load(sys.argv[3]),random_state=0)
+            x_test = np.load(sys.argv[4])
+            y_test = np.load(sys.argv[5])            
         if sys.argv[1] == 'logistic':
             logistic_regression(x_train,x_test,y_train,y_test)
         elif sys.argv[1] == 'svm':
@@ -155,6 +165,6 @@ def main():
         elif sys.argv[1] == 'neural':
             dense_layer(x_train,x_test,y_train,y_test)
         else:
-            print("Options are 'logistic', 'svm', or 'neural'")
+            print("Options for <classifier> are 'logistic', 'svm', or 'neural'")
     
 main()

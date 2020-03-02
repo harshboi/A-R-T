@@ -39,8 +39,10 @@ else:
     labels = []
 
     seen_urls = set()
+    duplicate_counter = 0
     for x in data:
         if re.sub(r"http\S+", "", x['tweet']) in seen_urls:
+            duplicate_counter +=1
             continue
         else:
             seen_urls.add(re.sub(r"http\S+", "", x['tweet']))
@@ -67,6 +69,7 @@ else:
     print("Total Tweets: {}".format(relnum+irrnum))
     print("Number of Relevant Tweets: {}".format(relnum))
     print("Number of Irrelevant Tweets: {}".format(irrnum))
+    print("Number of Duplicated Tweets Removed: {}".format(duplicate_counter))
 
     #encode tweet text and save numpy arrays for encodings and labels
     np.save(label_filename,newlabel)
