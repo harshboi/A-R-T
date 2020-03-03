@@ -40,6 +40,12 @@ else:
 
     seen_urls = set()
     duplicate_counter = 0
+
+    '''
+    filter_text = "exploit"
+    filter_rel = 0
+    filter_irrel = 0
+    '''
     for x in data:
         if re.sub(r"http\S+", "", x['tweet']) in seen_urls:
             duplicate_counter +=1
@@ -47,6 +53,15 @@ else:
         else:
             seen_urls.add(re.sub(r"http\S+", "", x['tweet']))
 
+        '''
+        if filter_text in x['tweet']:
+            if x['relevant'] == 0:
+                filter_irrel += 1
+            else:
+                filter_rel += 1
+        else:
+            continue
+        '''
         if x['relevant'] == 0:
             irrnum +=1
             text.append(re.sub(r"http\S+", "", x['tweet']))
@@ -70,8 +85,11 @@ else:
     print("Number of Relevant Tweets: {}".format(relnum))
     print("Number of Irrelevant Tweets: {}".format(irrnum))
     print("Number of Duplicated Tweets Removed: {}".format(duplicate_counter))
+    #print("Number of tweets containing {}: {}\n\tRelevant: {}\n\tIrrelevant: {}".format(filter_text,filter_irrel+filter_rel,filter_rel,filter_irrel))
 
     #encode tweet text and save numpy arrays for encodings and labels
+    #text_file_name = filter_text+"_text"
+    #np.save(text_file_name,newtext)
     np.save(label_filename,newlabel)
     print("Finished saving labels, beginning encoding process, this might take a couple minutes!\nWe will notify on completion")
     encodings = bc.encode(newtext)
