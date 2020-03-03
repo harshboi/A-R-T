@@ -43,10 +43,13 @@ def array(model_file,text_file,encoding_file,label_file,output_file):
     probas = clf.predict_proba(x)
     print_arr = ['Irrelevant','Relevant']
     f = open(output_file, 'w')
+    f.close()
     for i,t in enumerate(text):
+        f = open(output_file, 'a')
         f.write("Tweet: "+t+'\n')
         f.write("Label: "+str(print_arr[y[i]])+'\n')
         f.write("Prediction: "+str(print_arr[predictions[i]])+'\n\n')
+        f.close()
         print("Tweet: "+t)
         print("Label: "+str(print_arr[y[i]]))
         print("Prediction: "+str(print_arr[predictions[i]])+"\n")
