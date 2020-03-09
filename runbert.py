@@ -89,7 +89,7 @@ else:
 
     #encode tweet text and save numpy arrays for encodings and labels
     #text_file_name = filter_text+"_text"
-    #np.save(text_file_name,newtext)
+    #np.save("train_set_text",newtext)
     np.save(label_filename,newlabel)
     print("Finished saving labels, beginning encoding process, this might take a couple minutes!\nWe will notify on completion")
     encodings = bc.encode(newtext)

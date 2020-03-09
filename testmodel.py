@@ -34,7 +34,7 @@ def print_metrics(y_true,y_pred,y_probas,show_plot=True):
 
 
 
-def array(model_file,text_file,encoding_file,label_file,output_file):
+def array_label(model_file,text_file,encoding_file,label_file,output_file):
     clf = pickle.load(open(model_file,'rb'))
     text = np.load(text_file)
     x = np.load(encoding_file)
@@ -55,6 +55,23 @@ def array(model_file,text_file,encoding_file,label_file,output_file):
         print("Prediction: "+str(print_arr[predictions[i]])+"\n")
     print_metrics(y,predictions,probas[:,1])
 
+def array(model_file,text_file,encoding_file,output_file):
+    clf = pickle.load(open(model_file,'rb'))
+    text = np.load(text_file)
+    x = np.load(encoding_file)
+    predictions = clf.predict(x)
+    print_arr = ['Irrelevant','Relevant']
+    f = open(output_file, 'w')
+    f.close()
+    for i,t in enumerate(text):
+        f = open(output_file, 'a')
+        f.write("Tweet: "+t+'\n')
+        f.write("Label: "+str(print_arr[y[i]])+'\n')
+        f.write("Prediction: "+str(print_arr[predictions[i]])+'\n\n')
+        f.close()
+        print("Tweet: "+t)
+        print("Prediction: "+str(print_arr[predictions[i]])+"\n")
+
 def interactive(model_file):
     clf = pickle.load(open(model_file,'rb'))
     from bert_serving.client import BertClient
@@ -64,30 +81,34 @@ def interactive(model_file):
     bc = BertClient(check_length = False)
     while(True):
         string = input("Enter text to classify: ")
-        string = re.sub(r"http\S+", "", string)
-        if not re.match('[a-zA-Z]',string):
-            print("Please enter a non-empty string")
-            continue
+        #string = re.sub(r"http\S+", "", string)
+        encoding = bc.encode([string])
+        prediction = clf.predict(encoding)
+        probas = clf.predict_proba(encoding)
+        if prediction[0]:
+            print("Relevant")
         else:
-            encoding = bc.encode([string])
-            prediction = clf.predict(encoding)
-            if prediction[0]:
-                print("Relevant")
-            else:
-                print("Irrelevant")
+            print("Irrelevant")
+        print(probas)
 
 def main():
-    usage_message = "Usage:\n1. python testmodel.py <model_pickle_file> array <text_npy_file> <encoding_npy_file> <label_npy_file> <output_file_name>\
+    usage_message = "Usage:\n1. python testmodel.py <model_pickle_file> array_label <text_npy_file> <encoding_npy_file> <label_npy_file> <output_file_name>\
                     \n2. python testmodel.py <model_pickle_file> interactive"
     if len(sys.argv) < 3:
         print(usage_message)
     elif len(sys.argv) == 3 and sys.argv[2] == "interactive":
         interactive(sys.argv[1])
-    elif sys.argv[2] == "array":
+    elif sys.argv[2] == "array_label":
         if len(sys.argv) == 7:
-            array(sys.argv[1],sys.argv[3],sys.argv[4],sys.argv[5],sys.argv[6])
+            array_label(sys.argv[1],sys.argv[3],sys.argv[4],sys.argv[5],sys.argv[6])
         else:
-            usage_message = "Usage: python testmodel.py <model_pickle_file> array <text_npy_file> <encoding_npy_file> <label_npy_file> <output_file_name>"
+            usage_message = "Usage: python testmodel.py <model_pickle_file> array_label <text_npy_file> <encoding_npy_file> <label_npy_file> <output_file_name>"
+            print(usage_message)
+    elif sys.argv[3] == "array":
+        if len(sys.argv) == 6:
+            array(sys.argv[1],sys.argv[3],sys.argv[4],sys.argv[5])
+        else:
+            usage_message = "Usage: python testmodel.py <model_pickle_file> array <text_npy_file> <encoding_npy_file> <output_file_name>"
             print(usage_message)
     else:
         print(usage_message)
