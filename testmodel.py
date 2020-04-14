@@ -53,7 +53,7 @@ def array_label(model_file,text_file,encoding_file,label_file,output_file):
         print("Tweet: "+t)
         print("Label: "+str(print_arr[y[i]]))
         print("Prediction: "+str(print_arr[predictions[i]])+"\n")
-    print_metrics(y,predictions,probas[:,1])
+    print_metrics(y,predictions,probas[:,1],False)
 
 def array(model_file,text_file,encoding_file,output_file):
     clf = pickle.load(open(model_file,'rb'))
@@ -66,7 +66,6 @@ def array(model_file,text_file,encoding_file,output_file):
     for i,t in enumerate(text):
         f = open(output_file, 'a')
         f.write("Tweet: "+t+'\n')
-        f.write("Label: "+str(print_arr[y[i]])+'\n')
         f.write("Prediction: "+str(print_arr[predictions[i]])+'\n\n')
         f.close()
         print("Tweet: "+t)
@@ -92,23 +91,24 @@ def interactive(model_file):
         print(probas)
 
 def main():
-    usage_message = "Usage:\n1. python testmodel.py <model_pickle_file> array_label <text_npy_file> <encoding_npy_file> <label_npy_file> <output_file_name>\
-                    \n2. python testmodel.py <model_pickle_file> interactive"
+    usage_message = 'Usage:\n1. python testmodel.py "array_label" <model_pickle_file> <text_npy_file> <encoding_npy_file> <label_npy_file> <output_file_name>\
+                    \n2. python testmodel.py "interactive" <model_pickle_file>\
+                    \n3. python testmodel.py "array" <model_pickle_file> <text_npy_file> <encoding_npy_file> <output_file_name>'
     if len(sys.argv) < 3:
         print(usage_message)
-    elif len(sys.argv) == 3 and sys.argv[2] == "interactive":
+    elif len(sys.argv) == 3 and sys.argv[1] == "interactive":
         interactive(sys.argv[1])
-    elif sys.argv[2] == "array_label":
+    elif sys.argv[1] == "array_label":
         if len(sys.argv) == 7:
-            array_label(sys.argv[1],sys.argv[3],sys.argv[4],sys.argv[5],sys.argv[6])
+            array_label(sys.argv[2],sys.argv[3],sys.argv[4],sys.argv[5],sys.argv[6])
         else:
-            usage_message = "Usage: python testmodel.py <model_pickle_file> array_label <text_npy_file> <encoding_npy_file> <label_npy_file> <output_file_name>"
+            usage_message = 'Usage: python testmodel.py "array_label" <model_pickle_file> <text_npy_file> <encoding_npy_file> <label_npy_file> <output_file_name>'
             print(usage_message)
-    elif sys.argv[3] == "array":
+    elif sys.argv[1] == "array":
         if len(sys.argv) == 6:
-            array(sys.argv[1],sys.argv[3],sys.argv[4],sys.argv[5])
+            array(sys.argv[2],sys.argv[3],sys.argv[4],sys.argv[5])
         else:
-            usage_message = "Usage: python testmodel.py <model_pickle_file> array <text_npy_file> <encoding_npy_file> <output_file_name>"
+            usage_message = 'Usage: python testmodel.py "array" <model_pickle_file> <text_npy_file> <encoding_npy_file> <output_file_name>'
             print(usage_message)
     else:
         print(usage_message)

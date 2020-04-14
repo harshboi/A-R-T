@@ -12,19 +12,19 @@ import pdb
 
 
 #validate command line arguments
-if len(sys.argv) < 4 or len(sys.argv) > 5 or (len(sys.argv) == 5 and sys.argv[4] != 'ignore'):
-    print("Usage: runbert.py <json data input file path> <encoding output filename> <label output filename> [ignore maybes]\n Type in 'ignore' for [ignore maybes] to ignore maybe relevant tweets, otherwise script uses them by default")
+if len(sys.argv) < 5 or len(sys.argv) > 6 or (len(sys.argv) == 6 and sys.argv[5] != 'ignore'):
+    print("Usage: runbert.py <json data input file path> <text output filename> <encoding output filename> <label output filename> [ignore maybes]\n Type in 'ignore' for [ignore maybes] to ignore maybe relevant tweets, otherwise script uses them by default")
 else:    
 
     #toggle use maybe relevant tweets flag
     use_maybes = True
-    if sys.argv[1] == 'ignore':
+    if len(sys.argv) == 6:
         use_maybes = False
 
     #take in data,encoding, and label output filenames    
     data_file = os.path.normpath(sys.argv[1])
-    encoding_filename = sys.argv[2]
-    label_filename = sys.argv[3]
+    encoding_filename = sys.argv[3]
+    label_filename = sys.argv[4]
 
     #load json tweet data
     data = {}
@@ -81,15 +81,15 @@ else:
     newlabel = [labels[i] for i,str in enumerate(text) if re.match('[a-zA-Z]',str)]
 
     #print statistics about extracted dataset
-    print("Total Tweets: {}".format(relnum+irrnum))
-    print("Number of Relevant Tweets: {}".format(relnum))
-    print("Number of Irrelevant Tweets: {}".format(irrnum))
-    print("Number of Duplicated Tweets Removed: {}".format(duplicate_counter))
+    print("Total Tweets: {}".format(len(newtext)))
+    print("Number of Relevant Tweets: {}".format(sum(newlabel)))
+    print("Number of Irrelevant Tweets: {}".format(len(newtext)-sum(newlabel)))
+    #print("Number of Duplicated Tweets Removed: {}".format(duplicate_counter))
     #print("Number of tweets containing {}: {}\n\tRelevant: {}\n\tIrrelevant: {}".format(filter_text,filter_irrel+filter_rel,filter_rel,filter_irrel))
 
     #encode tweet text and save numpy arrays for encodings and labels
-    #text_file_name = filter_text+"_text"
-    #np.save("train_set_text",newtext)
+    text_file_name = sys.argv[2]
+    np.save(text_file_name,newtext)
     np.save(label_filename,newlabel)
     print("Finished saving labels, beginning encoding process, this might take a couple minutes!\nWe will notify on completion")
     encodings = bc.encode(newtext)
