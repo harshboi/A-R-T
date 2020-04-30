@@ -1,4 +1,4 @@
-![McAfee Logo] (https://github.com/harshboi/A-R-T/blob/master/Images/McAfee%20Logo.jpg)
+![McAfee Logo] (Images/McAfee%20Logo.jpg)
 
 --------------------------------------------------------------------------------
 
