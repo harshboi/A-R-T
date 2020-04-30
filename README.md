@@ -3,12 +3,12 @@ Repository for AI Threat Intelligence Capstone
 
 AI Threat Intelligence is hunting for tweets on Twitter that can potentially indicate whether a tweet is talking about an emerging threat.
 
-A-R-T uses a large number of technologies. Bert for Natural Language Processing, Model. Development in Tensorflow (Keras) & Pytorch, Spacy & NLTK for position entity tagging, Neo4j as the graph database and AWS MySql as the Relational database. 
+A-R-T uses a large number of technologies. Twint for dataset curation, Twitter API for streaming, Bert for Natural Language Processing, Model. Development in Tensorflow (Keras) & Pytorch, Spacy & NLTK for position entity tagging, Neo4j as the graph database and AWS MySql as the Relational database. 
 
 ## Install
 
-1)
-  See the [Bert As A Service (BAAS) install guide] (https://github.com/hanxiao/bert-as-service/#user-content-bert-as-service)
+1) Bert As A Service (BAAS)
+  See the [Bert As A Service install guide] (https://github.com/hanxiao/bert-as-service/#user-content-bert-as-service)
 
   Special Instructions: Setup a Conda/pip environment with the tf version less than 1.15 as graph generation from other versions do not work with BAAS
 
@@ -51,7 +51,7 @@ A-R-T uses a large number of technologies. Bert for Natural Language Processing,
   >>> import spacy
   >>> nlp = spacy.load('en_core_web_sm')
   ```
-  Note: Functions for such present in the final_pipeline.py. Check documentation on calling them
+  Note: Functions for such present in the final_pipeline.py. Check in-file documentation on calling them
   
 3. [NLTK] (https://www.nltk.org/)
 
@@ -68,4 +68,59 @@ A-R-T uses a large number of technologies. Bert for Natural Language Processing,
   >>> nltk.download()
   ```
 
-  Note: Functions for such present in the final_pipeline.py. Check documentation on calling them
+  Note: Functions for such present in the final_pipeline.py. Check in-file documentation on calling them.
+
+4. [Neo4j] (https://neo4j.com)
+
+  [Install Python API using:] (https://neo4j.com/developer/python/)
+
+  ```
+  $ pip install neo4j
+  ```
+
+  To establish connection to DB:
+
+  ```
+  >>> from neo4j import GraphDatabase
+  >>> driver = GraphDatabase.driver("bolt://localhost",auth=("test_user","password"), encrypted=False)
+  ```
+
+  Note to be functionally compliant with final_pipeline.py, create user and password "test_user" and "Password" respectively
+
+5. [Twint] (https://github.com/twintproject/twint/#user-content-twint---twitter-intelligence-tool)
+
+  Install Using
+
+  ```
+  $ pip3 install twint
+  ```
+
+  Note: Functions for such present in the final_pipeline.py. Check in-file documentation on calling them.
+
+6. [Twitter API] (https://developer.twitter.com/en/docs/basics/getting-started)
+
+Requires getting approved for a Twitter developer account. Streaming API requires a paid version (Enterprise) of the Twitter API. We have a basic connection to the twitter API established.
+
+[Twitter documentation for authenticating/connecting to Twitter API] (https://developer.twitter.com/en/docs/basics/authentication/oauth-1-0a/creating-a-signature) - Most time consuming step
+
+Here is a list of our keys that might help in looking for what keys should look like:
+
+```
+>>> oauth_consumer_key = ZYOj2R1VYsIUhaRvsrcRuHxk6
+>>> oauth_nonce = kYjzVBB8Y0ZFabxSWbWovY3uYSQ2pTgmZeNu2VS4cg
+>>> Consumer Secret = API Secret Key = uTwMxW2CPXfv8wZCcqOSX8Yw46eqJVMNopqh5kh9O0VXiVQNRG
+>>> Access token secret = OAuth token secret: VB6fxb1akdtwRDf52sbQlPKE9tpHEPX1ZBSI3Y1t33REk
+>>> Signing key = uTwMxW2CPXfv8wZCcqOSX8Yw46eqJVMNopqh5kh9O0VXiVQNRG&VB6fxb1akdtwRDf52sbQlPKE9tpHEPX1ZBSI3Y1t33REk
+>>> oauth-token = 797644398670409728-I3aUqpmhD7uPscfFZFxMGfMWXPBmiaN
+>>> oauth_signature = Use HMAC
+```
+
+Establishing a connection:
+
+```
+>>> import twitter
+>>> api = twitter.Api(consumer_key="ZYOj2R1VYsIUhaRvsrcRuHxk6",
+                      consumer_secret="uTwMxW2CPXfv8wZCcqOSX8Yw46eqJVMNopqh5kh9O0VXiVQNRG",
+                      access_token_key="797644398670409728-Zwgcl9kcCFerhFNlFFGwR3emSbfpfpX",
+                      access_token_secret="CzVCCqD8X9FC059X98deDiNYb24IWjhZYVeAhoU4F5v7l")
+```
