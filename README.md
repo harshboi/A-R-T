@@ -12,7 +12,7 @@ A-R-T uses a large number of technologies. Twint for dataset curation, Twitter A
 
 ## Install
 
-1) Bert As A Service (BAAS)
+#### 1) Bert As A Service (BAAS)
   See the [Bert As A Service install guide] (https://github.com/hanxiao/bert-as-service/#user-content-bert-as-service)
 
   Special Instructions: Setup a Conda/pip environment with the tf version less than 1.15 as graph generation from other versions do not work with BAAS
@@ -41,7 +41,7 @@ A-R-T uses a large number of technologies. Twint for dataset curation, Twitter A
 
   Note: Functions for such are present in final_pipeline.py. Check documentation for such for using them.
 
-2. [Hugginface Transformer - PyTorch] (https://huggingface.co/)
+#### 2. [Hugginface Transformer - PyTorch] (https://huggingface.co/)
 
   [Install Transformers using: ] (https://huggingface.co/transformers/installation.html)
 
@@ -58,7 +58,7 @@ A-R-T uses a large number of technologies. Twint for dataset curation, Twitter A
 
     Note: Functions for such will be present in final_pipeline.py in the future. Refer to finetune.py currently
 
-3. [Spacy] (https://spacy.io/usage/linguistic-features)
+#### 3. [Spacy] (https://spacy.io/usage/linguistic-features)
 
   [Install Spacy using:] (https://spacy.io/usage)
 
@@ -75,7 +75,7 @@ A-R-T uses a large number of technologies. Twint for dataset curation, Twitter A
   ```
   Note: Functions for such present in final_pipeline.py. Check in-file documentation on calling them
   
-4. [NLTK] (https://www.nltk.org/)
+#### 4. [NLTK] (https://www.nltk.org/)
 
   [Install NLTK Using:] (https://www.nltk.org/install.html)
 
@@ -92,7 +92,7 @@ A-R-T uses a large number of technologies. Twint for dataset curation, Twitter A
 
   Note: Functions for such present in final_pipeline.py. Check in-file documentation on calling them.
 
-5. [Neo4j] (https://neo4j.com)
+#### 5. [Neo4j] (https://neo4j.com)
 
   [Install Python API using:] (https://neo4j.com/developer/python/)
 
@@ -109,7 +109,7 @@ A-R-T uses a large number of technologies. Twint for dataset curation, Twitter A
 
   Note to be functionally compliant with final_pipeline.py, create user and password "test_user" and "Password" respectively
 
-6. [Twint] (https://github.com/twintproject/twint/#user-content-twint---twitter-intelligence-tool)
+#### 6. [Twint] (https://github.com/twintproject/twint/#user-content-twint---twitter-intelligence-tool)
 
   Install Using
 
@@ -119,7 +119,7 @@ A-R-T uses a large number of technologies. Twint for dataset curation, Twitter A
 
   Note: Functions for such present in the final_pipeline.py. Check in-file documentation on calling them.
 
-7. [Twitter API] (https://developer.twitter.com/en/docs/basics/getting-started)
+#### 7. [Twitter API] (https://developer.twitter.com/en/docs/basics/getting-started)
 
   Requires getting approved for a Twitter developer account. Streaming API requires a paid version (Enterprise) of the Twitter   API. We have a basic connection to the twitter API established.
 
