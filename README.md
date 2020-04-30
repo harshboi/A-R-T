@@ -1,4 +1,4 @@
-![McAfee Logo] (Images/McAfee%20Logo.jpg)
+![McAfee Logo] (Images/McAfee\ Logo.jpg)
 
 --------------------------------------------------------------------------------
 
