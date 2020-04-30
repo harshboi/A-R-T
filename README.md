@@ -1,4 +1,6 @@
-[McAfee Logo] (Images/McAfee_Logo.jpg)
+<div align="center">
+  <img src="./Images/McAfee_Logo.jpg">
+</div>
 
 --------------------------------------------------------------------------------
 
