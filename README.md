@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="./Images/McAfee_Logo.jpg">
+  <img src="./Images/mcafee_logo.png", height="200" width="350">
 </div>
 
 --------------------------------------------------------------------------------
