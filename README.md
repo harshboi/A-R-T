@@ -1,5 +1,8 @@
-# A-R-T - Automated Research Tool
-Repository for AI Threat Intelligence Capstone
+![McAfee Logo] (https://github.com/harshboi/A-R-T/blob/master/Images/McAfee%20Logo.jpg)
+
+--------------------------------------------------------------------------------
+
+# A-R-T - Automated Research Tool: McAfee
 
 AI Threat Intelligence is hunting for tweets on Twitter that can potentially indicate whether a tweet is talking about an emerging threat.
 
