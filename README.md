@@ -34,11 +34,11 @@ A-R-T uses a large number of technologies. Twint for dataset curation, Twitter A
 
   3. Use Client to Get Sentence Encodes
   Now you can encode sentences simply as follows:
-
+```
   from bert_serving.client import BertClient
   bc = BertClient()
   bc.encode(['First do it', 'then do it right', 'then do it better'])
-
+```
   Note: Functions for such are present in final_pipeline.py. Check documentation for such for using them.
 
 #### 2. [Hugginface Transformer - PyTorch](https://huggingface.co/)
