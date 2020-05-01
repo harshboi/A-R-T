@@ -13,7 +13,7 @@ A-R-T uses a large number of technologies. Twint for dataset curation, Twitter A
 ## Install
 
 #### 1) Bert As A Service (BAAS)
-  See the [Bert As A Service install guide] (https://github.com/hanxiao/bert-as-service/#user-content-bert-as-service)
+  See the [Bert As A Service install guide](https://github.com/hanxiao/bert-as-service/#user-content-bert-as-service)
 
   Special Instructions: Setup a Conda/pip environment with the tf version less than 1.15 as graph generation from other versions do not work with BAAS
 
@@ -24,7 +24,7 @@ A-R-T uses a large number of technologies. Twint for dataset curation, Twitter A
   $ pip install bert-serving-client  # client, independent of `bert-serving-server`
   ```
 
-  Download the pretrained BERT model - [Bert Large-Cased] (https://storage.googleapis.com/bert_models/2018_10_18/cased_L-24_H-1024_A-16.zip)
+  Download the pretrained BERT model - [Bert Large-Cased](https://storage.googleapis.com/bert_models/2018_10_18/cased_L-24_H-1024_A-16.zip)
 
   2. Start the BERT service
   After installing the server, you should be able to use bert-serving-start CLI as follows:
@@ -41,9 +41,9 @@ A-R-T uses a large number of technologies. Twint for dataset curation, Twitter A
 
   Note: Functions for such are present in final_pipeline.py. Check documentation for such for using them.
 
-#### 2. [Hugginface Transformer - PyTorch] (https://huggingface.co/)
+#### 2. [Hugginface Transformer - PyTorch](https://huggingface.co/)
 
-  [Install Transformers using: ] (https://huggingface.co/transformers/installation.html)
+  [Install Transformers using:](https://huggingface.co/transformers/installation.html)
 
   ```
   $ pip install transformers
@@ -58,9 +58,9 @@ A-R-T uses a large number of technologies. Twint for dataset curation, Twitter A
 
     Note: Functions for such will be present in final_pipeline.py in the future. Refer to finetune.py currently
 
-#### 3. [Spacy] (https://spacy.io/usage/linguistic-features)
+#### 3. [Spacy](https://spacy.io/usage/linguistic-features)
 
-  [Install Spacy using:] (https://spacy.io/usage)
+  [Install Spacy using:](https://spacy.io/usage)
 
   ```
   $ python -m spacy download en
@@ -75,9 +75,9 @@ A-R-T uses a large number of technologies. Twint for dataset curation, Twitter A
   ```
   Note: Functions for such present in final_pipeline.py. Check in-file documentation on calling them
   
-#### 4. [NLTK] (https://www.nltk.org/)
+#### 4. [NLTK](https://www.nltk.org/)
 
-  [Install NLTK Using:] (https://www.nltk.org/install.html)
+  [Install NLTK Using:](https://www.nltk.org/install.html)
 
   ```
   $ pip install --user -U nltk
@@ -92,9 +92,9 @@ A-R-T uses a large number of technologies. Twint for dataset curation, Twitter A
 
   Note: Functions for such present in final_pipeline.py. Check in-file documentation on calling them.
 
-#### 5. [Neo4j] (https://neo4j.com)
+#### 5. [Neo4j](https://neo4j.com)
 
-  [Install Python API using:] (https://neo4j.com/developer/python/)
+  [Install Python API using:](https://neo4j.com/developer/python/)
 
   ```
   $ pip install neo4j
@@ -109,7 +109,7 @@ A-R-T uses a large number of technologies. Twint for dataset curation, Twitter A
 
   Note to be functionally compliant with final_pipeline.py, create user and password "test_user" and "Password" respectively
 
-#### 6. [Twint] (https://github.com/twintproject/twint/#user-content-twint---twitter-intelligence-tool)
+#### 6. [Twint](https://github.com/twintproject/twint/#user-content-twint---twitter-intelligence-tool)
 
   Install Using
 
@@ -119,11 +119,11 @@ A-R-T uses a large number of technologies. Twint for dataset curation, Twitter A
 
   Note: Functions for such present in the final_pipeline.py. Check in-file documentation on calling them.
 
-#### 7. [Twitter API] (https://developer.twitter.com/en/docs/basics/getting-started)
+#### 7. [Twitter API](https://developer.twitter.com/en/docs/basics/getting-started)
 
   Requires getting approved for a Twitter developer account. Streaming API requires a paid version (Enterprise) of the Twitter   API. We have a basic connection to the twitter API established.
 
-  [Twitter documentation for authenticating/connecting to Twitter API]   (https://developer.twitter.com/en/docs/basics/authentication/oauth-1-0a/creating-a-signature) - Most time consuming step
+  [Twitter documentation for authenticating/connecting to Twitter API](https://developer.twitter.com/en/docs/basics/authentication/oauth-1-0a/creating-a-signature) - Most time consuming step
 
   Here is a list of our keys that might help in looking for what keys should look like:
 
