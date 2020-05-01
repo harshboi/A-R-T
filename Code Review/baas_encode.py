@@ -1,3 +1,9 @@
+###################################################################################################################
+# Author: Rohan Varma
+# This file takes in a json object and generates 3 .npy files containing the tweet text, baas encodings, and labels
+# it is critical to have a bert as a service server to be running in order for this script to work
+###################################################################################################################
+
 from bert_serving.client import BertClient
 
 #it is critical that a Bert as a Service (baas) server be running on the machine, add line for IP from baas api to connect to remote machine

@@ -1,5 +1,7 @@
 ###########################################################################################
 # Author: Rohan Varma
+# Followed Tutorial at https://mccormickml.com/2019/07/22/BERT-fine-tuning/
+# Made modifications to work with our data
 ###########################################################################################
 
 import torch
@@ -69,22 +71,22 @@ def tokenize_sentences(sentences,labels):
     labels = torch.tensor(labels,dtype=torch.long)
     return input_ids,attention_masks,labels
 
-def create_dataloaders(train_sentences,train_labels,test_sentences,test_labels):
+def create_dataloaders(train_sentences,train_labels,validation_sentences,validation_labels):
     train_ids,train_masks,train_label_tensors = tokenize_sentences(train_sentences,train_labels)
     train_dataset = TensorDataset(train_ids,train_masks,train_label_tensors)
 
-    test_ids,test_masks,test_label_tensors = tokenize_sentences(test_sentences,test_labels)
-    test_dataset = TensorDataset(test_ids,test_masks,test_label_tensors)
+    validation_ids,validation_masks,validation_label_tensors = tokenize_sentences(validation_sentences,validation_labels)
+    validation_dataset = TensorDataset(validation_ids,validation_masks,validation_label_tensors)
 
     print('{:>5,} training samples'.format(len(train_dataset)))
-    print('{:>5,} test samples'.format(len(test_dataset)))
+    print('{:>5,} validation samples'.format(len(validation_dataset)))
 
     # The DataLoader needs to know our batch size for training, so we specify it 
     # here. For fine-tuning BERT on a specific task, the authors recommend a batch 
     # size of 16 or 32.
     batch_size = 16
 
-    # Create the DataLoaders for our training and test sets.
+    # Create the DataLoaders for our training and validation sets.
     # We'll take training samples in random order. 
     train_dataloader = DataLoader(
         train_dataset,  # The training samples.
@@ -92,13 +94,13 @@ def create_dataloaders(train_sentences,train_labels,test_sentences,test_labels):
         batch_size = batch_size # Trains with this batch size.
     )
 
-    # For test the order doesn't matter, so we'll just read them sequentially.
-    test_dataloader = DataLoader(
-        test_dataset, # The test samples.
-        sampler = SequentialSampler(test_dataset), # Pull out batches sequentially.
+    # For validation the order doesn't matter, so we'll just read them sequentially.
+    validation_dataloader = DataLoader(
+        validation_dataset, # The validation samples.
+        sampler = SequentialSampler(validation_dataset), # Pull out batches sequentially.
         batch_size = batch_size # Evaluate with this batch size.
     )    
-    return train_dataloader,test_dataloader
+    return train_dataloader,validation_dataloader
 
 def print_model_info(model):
     # Get all of the model's parameters as a list of tuples.
@@ -142,8 +144,8 @@ def main():
     os.environ['CUDA_VISIBLE_DEVICES'] = '2'
     train_sentences = np.load(sys.argv[1])
     train_labels = np.load(sys.argv[2])
-    test_sentences = np.load(sys.argv[3])
-    test_labels = np.load(sys.argv[4])  
+    validation_sentences = np.load(sys.argv[3])
+    validation_labels = np.load(sys.argv[4])  
 
     # If there's a GPU available...
     if torch.cuda.is_available():    
@@ -160,7 +162,7 @@ def main():
         print('No GPU available, using the CPU instead.')
         device = torch.device("cpu")
 
-    train_dataloader,test_dataloader = create_dataloaders(train_sentences,train_labels,test_sentences,test_labels)
+    train_dataloader,validation_dataloader = create_dataloaders(train_sentences,train_labels,validation_sentences,validation_labels)
 
     # Load BertForSequenceClassification, the pretrained BERT model with a single 
     # linear classification layer on top. 
@@ -208,8 +210,8 @@ def main():
     torch.manual_seed(seed_val)
     torch.cuda.manual_seed_all(seed_val)
 
-    # We'll store a number of quantities such as training and test loss, 
-    # test accuracy, and timings.
+    # We'll store a number of quantities such as training and validation loss, 
+    # validation accuracy, and timings.
     training_stats = []
 
     # Measure the total training time for the whole run.
@@ -237,7 +239,7 @@ def main():
         # Put the model into training mode. Don't be mislead--the call to 
         # train just changes the mode, it doesn't perform the training.
         # dropout and batchnorm layers behave differently during training
-        # vs. test (source: https://stackoverflow.com/questions/51433378/what-does-model-train-do-in-pytorch)
+        # vs. validation (source: https://stackoverflow.com/questions/51433378/what-does-model-train-do-in-pytorch)
         model.train()
 
         # For each batch of training data...
@@ -314,13 +316,13 @@ def main():
         print("  Training epcoh took: {:}".format(training_time))
             
         # ========================================
-        #               Test
+        #               validation
         # ========================================
         # After the completion of each training epoch, measure our performance on
-        # our test set.
+        # our validation set.
 
         print("")
-        print("Running Test...")
+        print("Running validation...")
 
         t0 = time.time()
 
@@ -334,7 +336,7 @@ def main():
         nb_eval_steps = 0
 
         # Evaluate data for one epoch
-        for batch in test_dataloader:
+        for batch in validation_dataloader:
             
             # Unpack this training batch from our dataloader. 
             #
@@ -365,30 +367,30 @@ def main():
                                     attention_mask=b_input_mask,
                                     labels=b_labels)
                 
-            # Accumulate the test loss.
+            # Accumulate the validation loss.
             total_eval_loss += loss.item()
 
             # Move logits and labels to CPU
             logits = logits.detach().cpu().numpy()
             label_ids = b_labels.to('cpu').numpy()
 
-            # Calculate the accuracy for this batch of test sentences, and
+            # Calculate the accuracy for this batch of validation sentences, and
             # accumulate it over all batches.
             total_eval_accuracy += flat_accuracy(logits, label_ids)
             
 
-        # Report the final accuracy for this test run.
-        avg_val_accuracy = total_eval_accuracy / len(test_dataloader)
+        # Report the final accuracy for this validation run.
+        avg_val_accuracy = total_eval_accuracy / len(validation_dataloader)
         print("  Accuracy: {0:.5f}".format(avg_val_accuracy))
 
         # Calculate the average loss over all of the batches.
-        avg_val_loss = total_eval_loss / len(test_dataloader)
+        avg_val_loss = total_eval_loss / len(validation_dataloader)
         
-        # Measure how long the test run took.
-        test_time = format_time(time.time() - t0)
+        # Measure how long the validation run took.
+        validation_time = format_time(time.time() - t0)
         
-        print("  Test Loss: {0:.5f}".format(avg_val_loss))
-        print("  Test took: {:}".format(test_time))
+        print("  validation Loss: {0:.5f}".format(avg_val_loss))
+        print("  validation took: {:}".format(validation_time))
 
         # Record all statistics from this epoch.
         training_stats.append(
@@ -398,7 +400,7 @@ def main():
                 'Valid. Loss': avg_val_loss,
                 'Valid. Accur.': avg_val_accuracy,
                 'Training Time': training_time,
-                'Test Time': test_time
+                'validation Time': validation_time
             }
         )
 
