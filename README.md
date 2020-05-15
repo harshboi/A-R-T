@@ -161,7 +161,8 @@ Instruction on running not provided in README - Added to README
  1. Make sure that your security_tags.txt file and model.pt file are stored in your working directory.
  2. Run the pipeline using ```python pipeline.py```
  
- Core Functions for Pipeline:
+ Core Functionality for Pipeline:
+ 
  The code below shows how we get a prediction for each tweet
  ```    
  model_outputs = (model(token_ids.to(device), token_type_ids=None, attention_mask=attention_masks.to(device)))
