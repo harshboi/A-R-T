@@ -39,7 +39,7 @@ def main():
     #Fetching driver for graphDB
     driver = graphdb.fetchDriver()
     #Passing Every Tweet through Pipeline
-    for tweet in data[:50]:
+    for tweet in data:
         #Passed tweet to model
         token_ids,attention_masks = MLmodel.tokenize_sentences([tweet['tweet']])
         model_outputs = (model(token_ids.to(device), token_type_ids=None, attention_mask=attention_masks.to(device)))
@@ -59,7 +59,6 @@ def main():
 
         #Add Graph DB Functionality
         graphdb.addToGraph(driver,tweet)
-    print(data[4])
 
 
 if __name__ == "__main__":
