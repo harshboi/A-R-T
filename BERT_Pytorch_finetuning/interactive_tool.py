@@ -96,12 +96,13 @@ else:
     #load specified model state
     model.load_state_dict(torch.load(sys.argv[1],map_location=device))
     model.eval()
+    model.to(device)
     while(True):
         string = input("Enter string to classify: ")
         #tokenize inputted sentence to be compatible with BERT inputs
         token_ids,attention_masks = tokenize_sentences([string])
         #get a tensor containing probabilities of inputted sentence being irrelevant or relevant
-        model_outputs = (model(token_ids, token_type_ids=None, attention_mask=attention_masks))
+        model_outputs = (model(token_ids.to(device), token_type_ids=None, attention_mask=attention_masks.to(device)))
         softmax_layer = torch.nn.Softmax()
         result = softmax_layer(model_outputs[0])
         #identify which output node has higher probability and what that probability is
