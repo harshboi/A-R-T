@@ -158,19 +158,24 @@ Cluttered home directory - Moved all data files to datasets, created folders for
 Instruction on running not provided in README - Added to README
 
 ### Running Pipeline
-  1. Ensure the following dependencies are downloaded using pip:
-  - json
-  - re
-  - neo4j
-  - sys
-  - torch
-  - transformers
-  - pdb
-  - nltk
-  - spacy
-  - twint
-  - torch (use this link to download this dependency https://pytorch.org/ )
-  
- 2. Make sure that your security_tags.txt file and model.pt file are stored in your working directory.
- 3. Run the pipeline using ```python pipeline.py```
+ 1. Make sure that your security_tags.txt file and model.pt file are stored in your working directory.
+ 2. Run the pipeline using ```python pipeline.py```
+ Core Functions for Pipeline:
+ The code below shows how we get a prediction for each tweet
+ ```    
+ model_outputs = (model(token_ids.to(device), token_type_ids=None, attention_mask=attention_masks.to(device)))
+ softmax_layer = torch.nn.Softmax()
+ result = softmax_layer(model_outputs[0])
+ prediction = torch.argmax(result).item()
+ confidence = torch.max(result).item() 
+ ```
+ The code below shows how we extract nouns for the graph database
+ ```
+tweet = nlp.applyNLTK(tweet)
+tweet = nlp.applySpacy(tweet,2)
+ ```
+ The code below adds the extracted information to the graph database
+ ```
+ graphdb.addToGraph(driver,tweet)
+ ```
   
