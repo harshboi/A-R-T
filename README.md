@@ -160,6 +160,7 @@ Instruction on running not provided in README - Added to README
 ### Running Pipeline
  1. Make sure that your security_tags.txt file and model.pt file are stored in your working directory.
  2. Run the pipeline using ```python pipeline.py```
+ 
  Core Functions for Pipeline:
  The code below shows how we get a prediction for each tweet
  ```    
