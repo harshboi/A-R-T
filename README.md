@@ -156,3 +156,7 @@ Lack of Unit tests - Added Unittests to modularized and
 Code not Modularized into files - Modularized code based on functionality into files
 Cluttered home directory - Moved all data files to datasets, created folders for segregating ML models based on framework used
 Instruction on running not provided in README - Added to README
+
+### Running Pipeline
+  Ensure the following dependencies are downloaded:
+  
