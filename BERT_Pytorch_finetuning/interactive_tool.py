@@ -10,6 +10,28 @@ import sys
 import torch
 from transformers import BertTokenizer
 from transformers import BertForSequenceClassification
+import pdb
+
+def print_model_info(model):
+    # Get all of the model's parameters as a list of tuples.
+    params = list(model.named_parameters())
+
+    print('The BERT model has {:} different named parameters.\n'.format(len(params)))
+
+    print('==== Embedding Layer ====\n')
+
+    for p in params[0:5]:
+        print("{:<55} {:>12}".format(p[0], str(tuple(p[1].size()))))
+
+    print('\n==== First Transformer ====\n')
+
+    for p in params[5:21]:
+        print("{:<55} {:>12}".format(p[0], str(tuple(p[1].size()))))
+
+    print('\n==== Output Layer ====\n')
+
+    for p in params[-4:]:
+        print("{:<55} {:>12}".format(p[0], str(tuple(p[1].size()))))
 
 
 
@@ -70,6 +92,7 @@ else:
         output_attentions = False, # Whether the model returns attentions weights.
         output_hidden_states = False, # Whether the model returns all hidden-states.
     )
+    print_model_info(model)
     #load specified model state
     model.load_state_dict(torch.load(sys.argv[1],map_location=device))
     model.eval()
@@ -78,7 +101,9 @@ else:
         #tokenize inputted sentence to be compatible with BERT inputs
         token_ids,attention_masks = tokenize_sentences([string])
         #get a tensor containing probabilities of inputted sentence being irrelevant or relevant
-        result = torch.sigmoid(model(token_ids, token_type_ids=None, attention_mask=attention_masks)[0])
+        model_outputs = (model(token_ids, token_type_ids=None, attention_mask=attention_masks))
+        softmax_layer = torch.nn.Softmax()
+        result = softmax_layer(model_outputs[0])
         #identify which output node has higher probability and what that probability is
         prediction = torch.argmax(result).item()
         confidence = torch.max(result).item()
