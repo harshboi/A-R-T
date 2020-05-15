@@ -158,5 +158,19 @@ Cluttered home directory - Moved all data files to datasets, created folders for
 Instruction on running not provided in README - Added to README
 
 ### Running Pipeline
-  Ensure the following dependencies are downloaded:
+  1. Ensure the following dependencies are downloaded using pip:
+  - json
+  - re
+  - neo4j
+  - sys
+  - torch
+  - transformers
+  - pdb
+  - nltk
+  - spacy
+  - twint
+  - torch (use this link to download this dependency https://pytorch.org/ )
+  
+ 2. Make sure that your security_tags.txt file and model.pt file are stored in your working directory.
+ 3. Run the pipeline using ```python pipeline.py```
   
