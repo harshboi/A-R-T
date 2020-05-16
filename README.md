@@ -146,14 +146,6 @@ The model that is passed in is created using the code below:
     model.to(device)
 ```
 
-The device that is passed in is selected using the code below:
-```
-    if torch.cuda.is_available():
-        device = torch.device('cuda')
-    else:
-        device = torch.device('cpu')
-```
-
 The driver for the graph database can be retrieved from the ```fetchDriver()``` function shown below:
 ```
 driver = graphdb.fetchDriver()
