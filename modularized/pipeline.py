@@ -9,16 +9,8 @@ from transformers import BertTokenizer
 from transformers import BertForSequenceClassification
 
 def main():
-    #Prevents async errors when using twint functionality
-    nest_asyncio.apply()
 
-    #Collecting Tweets for passing through pipeline
-    tags = twitter.getTags()
-    tags = twitter.processTags(tags)
-    twitter.scrapeTweets(tags)
-    data = dataProcessing.processData()
-    data = dataProcessing.cleanData(data)
-
+    data =  grabTweets()
     #Setting up model
     if torch.cuda.is_available():
         device = torch.device('cuda')
@@ -40,6 +32,22 @@ def main():
     driver = graphdb.fetchDriver()
     #Passing Every Tweet through Pipeline
     for tweet in data:
+        pipeline(tweet,model,device,driver)
+
+
+def grabTweets():
+        #Prevents async errors when using twint functionality
+        nest_asyncio.apply()
+
+        #Collecting Tweets for passing through pipeline
+        tags = twitter.getTags()
+        tags = twitter.processTags(tags)
+        twitter.scrapeTweets(tags)
+        data = dataProcessing.processData()
+        data = dataProcessing.cleanData(data)
+        return data
+
+def pipeline(tweet,model,device,driver):
         #Passed tweet to model
         token_ids,attention_masks = MLmodel.tokenize_sentences([tweet['tweet']])
         model_outputs = (model(token_ids.to(device), token_type_ids=None, attention_mask=attention_masks.to(device)))
@@ -48,7 +56,7 @@ def main():
         prediction = torch.argmax(result).item()
         confidence = torch.max(result).item()
         if not prediction:
-            continue
+            return
         tweet['Relevance'] = "Relevant"
 
 
@@ -59,7 +67,6 @@ def main():
 
         #Add Graph DB Functionality
         graphdb.addToGraph(driver,tweet)
-
-
+        return
 if __name__ == "__main__":
     main()
