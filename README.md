@@ -148,16 +148,14 @@ A-R-T uses a large number of technologies. Twint for dataset curation, Twitter A
   ```
   Note: Functions for such present in the Twint Scraper.ipynb (Name for notebook will be changed in future for better           readability). Check in-file documentation on using them.
 
-Instructions on Running:
-
 Appendix:
-Criticism and response to such
-Lack of Unit tests - Added Unittests to modularized and 
-Code not Modularized into files - Modularized code based on functionality into files
-Cluttered home directory - Moved all data files to datasets, created folders for segregating ML models based on framework used
-Instruction on running not provided in README - Added to README
+Criticism and response to such <br>
+Lack of Unit tests - Added Unittests to modularized <br>
+Code not Modularized into files - Modularized code based on functionality into files <br>
+Cluttered home directory - Moved all data files to datasets, created folders for segregating ML models based on framework used <br>
+Instruction on running not provided in README - Added to README <br>
 
-### Running Pipeline
+### Instructions on Running 
  1. Make sure that your security_tags.txt file and model.pt file are stored in your working directory.
  2. Run the pipeline using ```python pipeline.py```
  
