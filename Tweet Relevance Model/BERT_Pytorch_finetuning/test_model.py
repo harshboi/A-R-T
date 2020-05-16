@@ -19,7 +19,9 @@ import matplotlib.pyplot as plt
 import os
 
 batch_size=16
-os.environ['CUDA_VISIBLE_DEVICES'] = '0'
+
+#specify which GPU to use
+#os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 
 #prints out accuracy and auc
 def print_auc(y_true,y_probas,show_plot=True):

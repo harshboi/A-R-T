@@ -12,10 +12,11 @@ This folder contains files used for creating a BERT model that tests whether a t
 ## Installation Requirements
 
 
-### 1) Tensorflow (Version 1.10)
+#### 1) TensorFlow (Version 1.10)
     
   Note: Version 1.10 is required for compatibility with BAAS
 
+  [Install TensorFlow Using:](https://www.tensorflow.org/install/pip)
 ```
   $ pip install tensorflow==1.10      # if you do not want GPU support
   $ pip install tensorflow-gpu==1.10  # if you want GPU support
@@ -49,22 +50,23 @@ This folder contains files used for creating a BERT model that tests whether a t
   bc.encode(['First do it', 'then do it right', 'then do it better'])
 ```
 
-### 3) Scikit-Learn
+#### 3) Scikit-Learn
 
+  [Install Scikit-Learn using:](https://scikit-learn.org/stable/install.html)
 ```
   $ pip install -U scikit-learn
 ```
 
+#### 4) Matplotlib
 
-### 4) Matplotlib
-
+  [Install matplotlib using:](https://matplotlib.org/3.2.1/users/installing.html)
 ```
   $ pip install -U matplotlib
 ```
 
 ## Contents
 
-### 1) baas_encode.py
+#### 1) baas_encode.py
 
 This file takes in a json array object containing tweets, passes them to the BAAS server and produces three numpy arrays containing the tweet text, tweet encodings, and tweet labels. Along the way it also removes empty and duplciate tweets. It is critical that a BAAS server already be running in order for this script to work. It assumes that the json objects for individual tweets contain a field "tweet", if the actual tweet text is stored in a different field, adapt the script accordingly.
 
@@ -72,9 +74,9 @@ Usage:
 ```
   python runbert.py <json data input file path> <text output filename> <encoding output filename> <label output filename> [ignore maybes]
 ```
-Type in 'ignore' for [ignore maybes] to ignore maybe relevant tweets, otherwise script uses them by default
+Type in ```'ignore'``` for ```[ignore maybes]``` to ignore maybe relevant tweets, otherwise script uses them by default
 
-### 2) trainmodel.py
+#### 2) trainmodel.py
 
 This file trains a classification layer on top of the BERT encodings and provides performance metrics on the training and optionally the testing set. It takes in the type of classifier to be trained as well as NumPy arrays for the training encodings and labels. Optionally, NumPy arrays for testing encodings and labels can be provided as well
 
@@ -82,10 +84,10 @@ Usage:
 ```
   $ python trainmodel.py <classifier_type> <training_tweets> <training_labels> [test_tweets] [test_labels]
 ```
-Options for ```<classifier_type>``` are 'logistic', 'svm', and 'neural'
+Options for ```<classifier_type>``` are ```'logistic'```, ```'svm'```, and ```'neural'```
 
 
-### 3) testmodel.py
+#### 3) testmodel.py
 
 This file gives various options for testing a saved pickle file for either a scikit-learn svm or logistic regression classifier (it does not support saved pytorch models). It provides an interactive command line tool that allows you to enter sentences or lets you provide in NumPy arrays of text, encodings, and optionally labels, ultimately outputting a file that tabulates the model's predictions.
 
