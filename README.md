@@ -161,23 +161,40 @@ Instruction on running not provided in README - Added to README
  1. Make sure that your security_tags.txt file and model.pt file are stored in your working directory.
  2. Run the pipeline using ```python pipeline.py```
  
- Core Functionality for Pipeline:
- 
- The code below shows how we get a prediction for each tweet
- ```    
- model_outputs = (model(token_ids.to(device), token_type_ids=None, attention_mask=attention_masks.to(device)))
- softmax_layer = torch.nn.Softmax()
- result = softmax_layer(model_outputs[0])
- prediction = torch.argmax(result).item()
- confidence = torch.max(result).item() 
- ```
- The code below shows how we extract nouns for the graph database
- ```
-tweet = nlp.applyNLTK(tweet)
-tweet = nlp.applySpacy(tweet,2)
- ```
- The code below adds the extracted information to the graph database
- ```
- graphdb.addToGraph(driver,tweet)
- ```
-  
+Pipeline takes in 4 parameters
+- A tweet
+- The model
+- The device for running the model
+- The driver for connecting to the graph database
+
+The model that is passed in is created using the code below:
+```
+    model = BertForSequenceClassification.from_pretrained(
+        "bert-base-uncased", # Use the 12-layer BERT model, with an uncased vocab.
+        num_labels = 2, # The number of output labels--2 for binary classification.
+                        # You can increase this for multi-class tasks.
+        output_attentions = False, # Whether the model returns attentions weights.
+        output_hidden_states = False, # Whether the model returns all hidden-states.
+    )
+    model.load_state_dict(torch.load("model.pt",map_location=device))
+    model.eval()
+    model.to(device)
+```
+
+The device that is passed in is selected using the code below:
+```
+    if torch.cuda.is_available():
+        device = torch.device('cuda')
+    else:
+        device = torch.device('cpu')
+```
+
+The driver for the graph database can be retrieved from the ```fetchDriver()``` function shown below:
+```
+driver = graphdb.fetchDriver()
+```
+
+To run the pipeline you use the pipeline function and pass all four parameters shown below:
+```
+pipeline(tweet,model,device,driver)
+```
