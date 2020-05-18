@@ -6,25 +6,25 @@
 from neo4j import GraphDatabase
 import json
 
-def fetchDriver():
+def fetchDriver(username,password):
     #Indicate to driver where neo4j is running
-    driver = GraphDatabase.driver("bolt://localhost:7687",auth=("test_user","password"), encrypted=False)
+    driver = GraphDatabase.driver("bolt://localhost:7687",auth=(username,password), encrypted=False)
     return driver
 
-def addToGraph(driver,tweet_data):
+def addToGraph(driver,nouns,date,tweet_id):
     # idd = 2
     with driver.session() as session:
         tx = session.begin_transaction()
         count = 0
-        idd = 0
+        idd = tweet_id
 #         tx.run('''Match (a:Tweet {type: $word}) return a.num''', word=noun)
-        nouns = nltk_nouns(tweet_data['tweet'])
+        # nouns = nltk_nouns(tweet_data['tweet'])
         for noun in nouns:
             result = tx.run('''Match (a:Tweet {type: $word}) return a''', word=noun.lower())
             result = result.records()
             flag = True
-            date = tweet_data['date']
-            date = "2020-04-14"
+            # date = tweet_data['date']
+            # date = "2020-04-14"
 #             print(date)
             for record in result:
                 flag = False

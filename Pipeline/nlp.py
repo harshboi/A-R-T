@@ -7,31 +7,31 @@ from spacy.lang.en import English
 def applyNLTK(tweet):
     nlp = spacy.load('en_core_web_sm')
     sen_noun = []
-    sentence = tweet['tweet']
-    tokens = nltk.word_tokenize(sentence)
+    # sentence = tweet['tweet']
+    tokens = nltk.word_tokenize(tweet)
     tagged = nltk.pos_tag(tokens)
     for j in range(len(tagged)):
         if (tagged[j][1] == 'NNP'):
             sen_noun.append(tagged[j][0])
-    tweet['nltk'] = sen_noun
-    return tweet
+    # tweet['nltk'] = sen_noun
+    return sen_noun
 
 
 # Option = 1 => Get all Nouns, Oprion = 2 => Get position entities
 def applySpacy( tweet, option ):
     nlp = spacy.load('en_core_web_sm')
-    sentence = tweet['tweet'].replace("-", " ").replace("#", " ")
+    sentence = tweet.replace("-", " ").replace("#", " ")
     doc = nlp(sentence)
     if option == 1:
         tagged = [chunk.text for chunk in doc.noun_chunks]
-        tweet['spacy'] = tagged
-        return tweet
+        # tweet['spacy'] = tagged
+        return tagged
     else:
         pos_ent = []
         for ent in doc.ents:
             pos_ent.append(ent.text)
-        tweet['spacy'] = pos_ent
-        return tweet
+        # tweet['spacy'] = pos_ent
+        return pos_ent
 
 
 #Alternative Spacy --Currently Not in use

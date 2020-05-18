@@ -4,9 +4,9 @@ import json
 
 
 #Get all security tags that we will be searching twitter with
-def getTags():
+def getTags(file):
     #Reads tags from file  and adds each tag to an array
-    file = open("./security_tags.txt","r")
+    file = open("./"+file,"r")
     arr = []
     line1 = file.readlines()
     for x in line1:
