@@ -18,11 +18,10 @@ def main(option,file,modelFile,username,password):
         print("Pulling tweets from Twint")
         data =  grabTweets(file)
     #Setting up model
-    #if torch.cuda.is_available():
-    #    device = torch.device('cuda')
-    #else:
-    device = torch.device('cpu')
-    print("Here")
+    if torch.cuda.is_available():
+        device = torch.device('cuda')
+    else:
+        device = torch.device('cpu')
     # Load BertForSequenceClassification, the pretrained BERT model with a single
     # linear classification layer on top.
     model = BertForSequenceClassification.from_pretrained(
@@ -32,11 +31,9 @@ def main(option,file,modelFile,username,password):
         output_attentions = False, # Whether the model returns attentions weights.
         output_hidden_states = False, # Whether the model returns all hidden-states.
     )
-    print("Here")
     model.load_state_dict(torch.load(modelFile,map_location=device))
     model.eval()
     model.to(device)
-    print("Here")
     #Fetching driver for graphDB
     driver = graphdb.fetchDriver(username,password)
     #Passing Every Tweet through Pipeline
