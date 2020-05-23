@@ -1,0 +1,8 @@
+        for noun[i] in len(range(nouns)):
+            for noun[j] in len(range(i+1,nouns):
+                if noun[i] == noun[j]:
+                    continue
+                tx.run('''Match (a:Tweet), (b:Tweet) where $noun[i] = a.type and $noun[j] = b.type
+                        merge (a)-[r: ENCOUNTERED_WITH {type: $noun[i]}]->(b)''', noun[i]=noun[i].lower(), noun[j]=noun[j].lower())
+                tx.run('''Match (a:Tweet), (b:Tweet) where $noun[i] = a.type and $noun[j] = b.type
+                        merge (a)<-[r: ENCOUNTERED_WITH {type: $noun[j]}]-(b)''', noun[i]=noun[i].lower(), noun[j]=noun[j].lower())
