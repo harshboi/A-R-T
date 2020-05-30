@@ -4,8 +4,7 @@
 
 --------------------------------------------------------------------------------
 
-
-# Tweet Relevancy Model using Hugging
+# Tweet Relevancy Model using HuggingFace Transformer 
 
 This folder contains files used for creating a finetuned BERT model that tests whether a tweet is cybersecurity threat related or not. The base architecture is that a BAAS server is spun up that hosts a pretrained BERT model which returns vector encodings for sentences that are sent to it. These encodings are then passed onto a classification layer to get the final prediction of "Relevant" or "Irrelevant". The three classification layers that were implemented and tested were support vector machine, logistic regression, and single dense neural layer.
 
@@ -18,7 +17,7 @@ This folder contains files used for creating a finetuned BERT model that tests w
   Please use the selector on the PyTorch website to get the command appropriate for your system
   [PyTorch Installation Website](https://pytorch.org/get-started/locally/)
 
-#### 2. [Hugginface Transformer - PyTorch](https://huggingface.co/)
+#### 2. [Huggingface Transformer - PyTorch](https://huggingface.co/)
 
   [Install Transformers using:](https://huggingface.co/transformers/installation.html)
 
