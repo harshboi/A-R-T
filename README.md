@@ -124,44 +124,26 @@ A-R-T uses a large number of technologies. Twint for dataset curation, Twitter A
 
 ### Instructions on Running 
  1. Make sure that your security_tags.txt file and model.pt file are stored in your working directory.
- 2. Run the pipeline using ```python pipeline.py```
+ 2. Run the pipeline using either option 1 or option 2 discussed below.
  
-Pipeline takes in 4 parameters
-- A tweet
+Pipeline takes in the following parameters
+- An Option 
+- A data source
 - The model
-- The device for running the model
-- The driver for connecting to the graph database
+- The graphDB username
+- The graphDB password
 
-The model that is passed in is created using the code below:
-```
-    model = BertForSequenceClassification.from_pretrained(
-        "bert-base-uncased", # Use the 12-layer BERT model, with an uncased vocab.
-        num_labels = 2, # The number of output labels--2 for binary classification.
-                        # You can increase this for multi-class tasks.
-        output_attentions = False, # Whether the model returns attentions weights.
-        output_hidden_states = False, # Whether the model returns all hidden-states.
-    )
-    model.load_state_dict(torch.load("model.pt",map_location=device))
-    model.eval()
-    model.to(device)
-```
+Running the Pipeline
 
-The device that is passed in is selected using the code below:
-```
-    if torch.cuda.is_available():
-        device = torch.device('cuda')
-    else:
-        device = torch.device('cpu')
-```
+Option 1 - This is used for running the pipeline when you want to pass in the tweets through a json file. To run the Pipeline this way the command would be:
 
-The driver for the graph database can be retrieved from the ```fetchDriver()``` function shown below:
 ```
-driver = graphdb.fetchDriver()
+python pipeline.py {1} {json File} {model file} {graphDB username} {graphDB password}
 ```
+Option 2 - This is used for running the pipeline when you want to use the Twint Api to collect tweets to pass through the pipeline. The command for option 2 would be:
 
-To run the pipeline you use the pipeline function and pass all four parameters shown below:
 ```
-pipeline(tweet,model,device,driver)
+python pipeline.py {2} {hashtags txt file} {model file} {graphDB username} {graphDB password}
 ```
 
 ### Appendix:
