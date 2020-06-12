@@ -4,7 +4,6 @@
 
 --------------------------------------------------------------------------------
 
-
 # Tweet Relevancy Model using BERT-As-A-Service (BAAS)
 
 This folder contains files used for creating a BERT model that tests whether a tweet is cybersecurity threat related or not. The base architecture is that a BAAS server is spun up that hosts a pretrained BERT model which returns vector encodings for sentences that are sent to it. These encodings are then passed onto a classification layer to get the final prediction of "Relevant" or "Irrelevant". The three classification layers that were implemented and tested were support vector machine, logistic regression, and single dense neural layer.
