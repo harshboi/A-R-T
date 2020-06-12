@@ -69,8 +69,8 @@ def pipeline(tweet,model,device,driver):
         tweet['Relevance'] = "Relevant"
 
         #Natural Language Processing for removing important words
-        tweet['nltk'] = nlp.applyNLTK(tweet['tweet'])
-        tweet['spacy'] = nlp.applySpacy(tweet['tweet'],2)
+        tweet['nltk'] = nlp.remove_noise_from_tweet( tweet['tweet'] )
+        tweet['spacy'] = nlp.applySpacy(nlp.remove_noise_from_tweet( tweet['tweet'] ),2)
 
         #Add Graph DB Functionality
         #Combine extracted Nouns
@@ -78,7 +78,22 @@ def pipeline(tweet,model,device,driver):
         #Remove duplicates
         nouns = list(set(nouns))
         date = tweet['date']
-        graphdb.addToGraph(driver,nouns,date,tweet['id'])
+        
+#        graphdb.addToGraph(driver,nouns,date,tweet['id'])
+        
+        response = vectorizer.transform( [ remove_noise_from_tweet( tweet['tweet'] ) ] )
+        vectorizer = nlp.load_tf_idf_model ( "../Development/vectorizer.pickle" )
+        ans = nlp.get_top_tf_idf_words(response, len(sentence))
+        remove = set(ans[int(-len(ans)*0.7):])   # 0.7 = Return the bottom 70% of words in importance
+        f_nouns = []
+        for n in nouns:
+            if n.lower() not in remove and n.lower() != "fyi":
+                f_nouns.append(n.lower())
+        if f_nouns == []: continue
+    #     print(i, f_nouns)
+        graphdb.addToGraph(driver, f_nouns, tweet['date'], tweet['id'], tweet['link'], tweet['username'], tweet['name'], tweet['time'])
+        (*map(graphdb.check_relevance, repeat(driver), f_nouns), )
+
         return
 if __name__ == "__main__":
     #Option 1: python pipeline.py 1 data.json

@@ -2,7 +2,30 @@ import nltk
 import spacy
 from spacy.lang.en import English
 
+import numpy as np
+import pickle 
 
+from sklearn.feature_extraction.text import TfidfVectorizer
+def get_top_tf_idf_words(response, top_n):
+    sorted_nzs = np.argsort(response.data)[:-(top_n+1):-1]
+    return feature_names[response.indices[sorted_nzs]]
+    # feature_names = np.array(vectorizer.get_feature_names())
+
+# Note: corpus_data must be a list of dictionary with with key for every index being "text" and value being the sentence
+def create_tf_idf_model ( corpus_data ):
+    vectorizer = TfidfVectorizer()
+    corpus = [ corpus_data[i]['text'] for i in range( len(corpus_data) ) ]
+    X = vectorizer.fit_transform(corpus)
+    pickle.dump(vectorizer, open("vectorizer.pickle", "wb"))
+    return vectorizer
+
+# Supply location of pickle file
+def load_tf_idf_model ( pickled_model ):
+    vectorizer = pickle.load(open(pickled_model, "rb"))
+    return vectorizer
+
+def remove_noise_from_tweet (tweet):
+    return( tweet.replace("#", "").replace("|"," ").replace("@"," ") )
 
 def applyNLTK(tweet):
     nlp = spacy.load('en_core_web_sm')

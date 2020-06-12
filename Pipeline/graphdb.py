@@ -1,6 +1,6 @@
 ################################################################################################
-# Neo4j test for noun as node (required another db to store tweet)
-# Note we only create nodes here and not the relationships
+# Neo4j test for noun as node
+# Func also for checking relevance after inserted into db (Returns URL, Noun, Num_occurences)
 ################################################################################################
 
 from neo4j import GraphDatabase
@@ -11,21 +11,15 @@ def fetchDriver(username,password):
     driver = GraphDatabase.driver("bolt://localhost:7687",auth=(username,password), encrypted=False)
     return driver
 
-def addToGraph(driver,nouns,date,tweet_id):
-    # idd = 2
+def addToGraph(driver, nouns, date, tweet_id, link, username, name, time):
+    nouns  = list(set(nouns))
     with driver.session() as session:
         tx = session.begin_transaction()
         count = 0
-        idd = tweet_id
-#         tx.run('''Match (a:Tweet {type: $word}) return a.num''', word=noun)
-        # nouns = nltk_nouns(tweet_data['tweet'])
         for noun in nouns:
             result = tx.run('''Match (a:Tweet {type: $word}) return a''', word=noun.lower())
             result = result.records()
             flag = True
-            # date = tweet_data['date']
-            # date = "2020-04-14"
-#             print(date)
             for record in result:
                 flag = False
                 find_index = -1
@@ -35,13 +29,42 @@ def addToGraph(driver,nouns,date,tweet_id):
                         break
                 if find_index != -1:
                     tx.run('''MATCH (a:Tweet {type:$word}) SET a.num = a.num+1, a.last10DaysCount =
-                    a.last10DaysCount[ ..$index ] + (a.last10DaysCount[ $index ] + 1) + a.last10DaysCount[ $index+1.. ] ''', word=noun.lower(), index = find_index)
+                    a.last10DaysCount[ ..$index ] + (a.last10DaysCount[ $index ] + 1) + a.last10DaysCount[ $index+1.. ], a.link_id = a.link_id + [ $link_id ] ''', word=noun.lower(), index = find_index, link_id = link + " " + tweet_id)
                 else:
-                    tx.run('''MATCH (a:Tweet {type:$word}) SET a.num = a.num+1, a.last10DaysDate = a.last10DaysDate + [$date], a.last10DaysCount = a.last10DaysCount + [1]''', word=noun.lower(), date=date)
+                    tx.run('''MATCH (a:Tweet {type:$word}) SET a.num = a.num+1, a.last10DaysDate = a.last10DaysDate + [$date], a.last10DaysCount = a.last10DaysCount + [1], a.link_id = a.link_id + [ $link_id ] ''', word=noun.lower(), date=date, link_id = link + " " + tweet_id)
             if flag:
-                tx.run('''CREATE (a:Tweet {type:$word, num:1, id:$idd, last10DaysDate:[$date], last10DaysCount:[1]})''', word=noun.lower(), idd=idd, date=date)
-                idd += 1
-            tx.run('''Match (a:Tweet), (b:Tweet) where $noun = a.type and $noun = b.type
-                        merge (a)-[r: encountred_with {type: $noun}]->(b)''', noun=noun.lower())
+                tx.run('''CREATE (a:Tweet {type:$word, num:1, last10DaysDate:[$date], last10DaysCount:[1], link_id:[ $link_id ]})''', word=noun.lower(), date=date, link_id = link + " " + tweet_id)
+            tx.run('''MERGE (a:Author {username:$username, name:$name})''', username=username.lower(), name = name.lower())
+            
+        for i in range(len(nouns)):
+            tx.run('''
+                    Match (a:Author { username: $username }), (b:Tweet {type: $noun})
+                    MERGE (a)-[: TWEETED {date: $date, time: $time, link_id: $link_id}]->(b)
+                    ''', noun=nouns[i].lower(), date=date, time=time, username=username.lower(), link_id = link + " " + tweet_id)
+            
+            for j in range(i+1, len(nouns)):
+                if nouns[i] == nouns[j]:
+                    continue
+                tx.run('''
+                        Match (a:Tweet { type: $noun_1 }), (b:Tweet {type: $noun_2})
+                        MERGE (a)-[: ENCOUNTERED_WITH {type: $noun_2}]->(b)
+                        MERGE (a)<-[: ENCOUNTERED_WITH {type: $noun_1}]-(b)
+                        ''', noun_1=nouns[i].lower(), noun_2=nouns[j].lower())
 
         tx.commit()
+
+def check_relevance (driver, noun):
+    with driver.session() as session:
+        tx = session.begin_transaction()
+        result = tx.run('''Match (a:Tweet {type: $word}) return a''', word=noun.lower())
+        result = result.records()
+        ans = []
+        for record in result:
+#             print(sorted(zip(record['a']['last10DaysDate'], record['a']['last10DaysCount'])))
+            date_and_count = sorted(zip(record['a']['last10DaysDate'], record['a']['last10DaysCount']))
+            if (date_and_count[-1][1] > 3):
+                link_id =  (*map( lambda x: x.split(" "), record['a']['link_id'] ), ) # Contains all urls encountered for that noun
+                for i in range(len(link_id)):
+                    print(link_id[i][0].split('/status')[0] + '/status/' + link_id[i][1], noun, date_and_count[-1][1])
+#                 print(link_id)
+                print("\n")
